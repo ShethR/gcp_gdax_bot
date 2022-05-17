@@ -9,8 +9,9 @@ I have updated some trivial parts of the code to make it easy to deploy on googl
 Relies on [gdax-python](https://github.com/danpaquin/gdax-python). Props to [danpaquin](https://github.com/danpaquin) and thanks!
 
 ## Schedule automated recurring buys via Google Cloud
-* Click [here]() for detailed instructions
-* ![System architecture](./docs/img/dca_system.png)
+Click [here](gcp_deploy_readme/README.md) for detailed instructions
+
+![System architecture](./docs/img/dca_system.png "GCP System Architecture")
 
 
 ## Trading Philosophy

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
-import boto3
+import base64
 import configparser
 import datetime
 import decimal
@@ -9,10 +9,10 @@ import json
 import math
 import sys
 import time
-
-import cbpro
-
 from decimal import Decimal
+
+import boto3
+import cbpro
 
 
 def get_timestamp():
@@ -32,6 +32,7 @@ def get_timestamp():
 
     This is meant to be run as a crontab to make regular buys/sells on a set schedule.
 """
+
 parser = argparse.ArgumentParser(
     description="""
         This is a basic Coinbase Pro DCA buying/selling bot.
@@ -46,15 +47,22 @@ parser = argparse.ArgumentParser(
 )
 
 # Required positional arguments
-parser.add_argument("market_name", help="(e.g. BTC-USD, ETH-BTC, etc)")
-
-parser.add_argument("order_side", type=str, choices=["BUY", "SELL"])
-
 parser.add_argument(
-    "amount", type=Decimal, help="The quantity to buy or sell in the amount_currency"
+    "-market_name", default="BTC-USD", help="(e.g. BTC-USD, ETH-BTC, etc)"
 )
 
-parser.add_argument("amount_currency", help="The currency the amount is denominated in")
+parser.add_argument("-order_side", default="BUY", type=str, choices=["BUY", "SELL"])
+
+parser.add_argument(
+    "-amount",
+    type=Decimal,
+    default="4.00",
+    help="The quantity to buy or sell in the amount_currency",
+)
+
+parser.add_argument(
+    "-amount_currency", default="USD", help="The currency the amount is denominated in"
+)
 
 
 # Additional options
@@ -87,20 +95,32 @@ parser.add_argument(
 parser.add_argument(
     "-c",
     "--config",
-    default="settings.conf",
+    default="./settings-local.conf",
     dest="config_file",
     help="Override default config file location",
 )
 
 
-if __name__ == "__main__":
+def main(event, context):
     args = parser.parse_args()
-    print(f"{get_timestamp()}: STARTED: {args}")
+    attributes = event.get("attributes", {})
 
-    market_name = args.market_name
-    order_side = args.order_side.lower()
-    amount = args.amount
-    amount_currency = args.amount_currency
+    market_name = attributes.get("market_name", args.market_name)
+    order_side = attributes.get("order_side", args.order_side).lower()
+    amount = Decimal(attributes.get("amount", args.amount))
+    amount_currency = attributes.get("amount_currency", args.amount_currency)
+    config_file = attributes.get("config_file", args.config_file)
+
+    job_mode = True if "job" in attributes else args.job_mode
+
+    args.market_name = market_name
+    args.order_side = order_side
+    args.amount = amount
+    args.amount_currency = amount_currency
+    args.config_file = config_file
+    args.job_mode = job_mode
+
+    print(f"{get_timestamp()}: STARTED: {args}")
 
     sandbox_mode = args.sandbox_mode
     job_mode = args.job_mode
@@ -118,7 +138,7 @@ if __name__ == "__main__":
 
     # Read settings
     config = configparser.ConfigParser()
-    config.read(args.config_file)
+    config.read(config_file)
 
     config_section = "production"
     if sandbox_mode:
@@ -256,3 +276,18 @@ if __name__ == "__main__":
         Subject=subject,
         Message=json.dumps(order, sort_keys=True, indent=4),
     )
+
+
+if __name__ == "__main__":
+    context = {}
+    event = {"attributes": {"job": None}}
+    # event = {
+    #     "attributes": {
+    #         "market_name": "BTC-USD",
+    #         "order_side": "BUY",
+    #         "amount": "1.00",
+    #         "amount_currency": "USD",
+    #         "config_file": "./settings-local.conf",
+    #     }
+    # }
+    main(event, context)
