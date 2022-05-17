@@ -280,7 +280,7 @@ def main(event, context):
 
 if __name__ == "__main__":
     context = {}
-    event = {"attributes": {"job": None}}
+    event = {"attributes": {}}
     # event = {
     #     "attributes": {
     #         "market_name": "BTC-USD",

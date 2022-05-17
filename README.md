@@ -106,17 +106,17 @@ Run against the Coinbase Pro sandbox by including the ```-sandbox``` flag. Remem
 
 Activate your virtualenv and try a basic buy of $100 USD worth of BTC:
 ```
-python gdax_bot.py BTC-USD BUY 100 USD -sandbox -c ../settings-local.conf
+python gcp_gdax_bot_deploy.py BTC-USD BUY 100 USD -sandbox -c ../settings-local.conf
 ```
 
 Check the sandbox UI and you'll see your limit order listed. Unfortunately your order probably won't fill unless there's other activity in the sandbox.
 
 
 ### Usage
-Run ```python gdax_bot.py -h``` for usage information:
+Run ```python gcp_gdax_bot_deploy.py -h``` for usage information:
 
 ```
-usage: gdax_bot.py [-h] [-sandbox] [-warn_after WARN_AFTER] [-j]
+usage: gcp_gdax_bot_deploy.py [-h] [-sandbox] [-warn_after WARN_AFTER] [-j]
                    [-c CONFIG_FILE]
                    market_name {BUY,SELL} amount amount_currency
 
@@ -151,18 +151,18 @@ This is meant to be run as a crontab to make regular purchases on a set schedule
 
 $50 USD of ETH every Monday at 17:23:
 ```
-23 17 * * 1 /your/virtualenv/path/bin/python -u /your/gdax_bot/path/src/gdax_bot.py -j ETH-USD BUY 50.00 USD -c /your/settings/path/your_settings_file.conf >> /your/cron/log/path/cron.log
+23 17 * * 1 /your/virtualenv/path/bin/python -u /your/gdax_bot/path/src/gcp_gdax_bot_deploy.py -j ETH-USD BUY 50.00 USD -c /your/settings/path/your_settings_file.conf >> /your/cron/log/path/cron.log
 ```
 *The ```-u``` option makes python output ```stdout``` and ```stderr``` unbuffered so that you can watch the progress in real time by running ```tail -f cron.log```.*
 
 €75 EUR of BTC every other day at 14:00:
 ```
-00 14 */2 * * /your/virtualenv/path/bin/python -u /your/gdax_bot/path/src/gdax_bot.py -j BTC-EUR BUY 75.00 EUR -c /your/settings/path/your_settings_file.conf >> /your/cron/log/path/cron.log
+00 14 */2 * * /your/virtualenv/path/bin/python -u /your/gdax_bot/path/src/gcp_gdax_bot_deploy.py -j BTC-EUR BUY 75.00 EUR -c /your/settings/path/your_settings_file.conf >> /your/cron/log/path/cron.log
 ```
 
 £5 GBP of LTC every day on every third hour at the 38th minute (i.e. 00:38, 03:38, 06:38, 09:38, 12:38, 15:38, 18:38, 21:38):
 ```
-38 */3 * * * /your/virtualenv/path/bin/python -u /your/gdax_bot/path/src/gdax_bot.py -j LTC-GBP BUY 5.00 GBP -c /your/settings/path/your_settings_file.conf >> /your/cron/log/path/cron.log
+38 */3 * * * /your/virtualenv/path/bin/python -u /your/gdax_bot/path/src/gcp_gdax_bot_deploy.py -j LTC-GBP BUY 5.00 GBP -c /your/settings/path/your_settings_file.conf >> /your/cron/log/path/cron.log
 ```
 
 
