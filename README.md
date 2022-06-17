@@ -11,6 +11,8 @@ Relies on [gdax-python](https://github.com/danpaquin/gdax-python). Props to [dan
 ## Schedule automated recurring buys via Google Cloud
 Click [here](gcp_deploy_readme/README.md) for detailed instructions
 
+Click [here](btcbot/README.md) for detailed instructions on how to host it on Amazon Web Service (AWS)
+
 ![System architecture](./docs/img/dca_system.png "GCP System Architecture")
 
 
